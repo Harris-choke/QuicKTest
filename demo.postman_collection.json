@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "05fafc8f-cd3a-498f-872d-8c939962d444",
+		"name": "demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "6215590"
+	},
+	"item": [
+		{
+			"name": "Reload",
+			"item": [
+				{
+					"name": "[Positive]wallet.loginRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"log print\", function () {",
+									"    setTimeout(()=>{console.log(\"this is log info\");}, 150);",
+									"    console.info(pm.request.toJSON());",
+									"    console.info(pm.response.json());",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var responseBody = pm.response.json();",
+									"pm.test(\"Response is success\", function () {",
+									"    pm.expect(responseBody.resultStatus).to.eql(1000);",
+									"    pm.expect(responseBody.result).to.have.property(\"body\");",
+									"    pm.expect(responseBody.result.body).to.have.property(\"loginId\");",
+									"    pm.environment.set(\"loginId\", responseBody.result.body.loginId);",
+									"    pm.expect(responseBody.result.body).to.have.property(\"sessionId\");",
+									"    pm.environment.set(\"sessionId\", responseBody.result.body.sessionId);",
+									"    pm.expect(responseBody.result.body).to.have.property(\"accountId\");",
+									"    pm.environment.set(\"userId\", responseBody.result.body.accountId);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.unset(\"mobileNumber\");\r",
+									"pm.environment.unset(\"pin\");\r",
+									"\r",
+									"var mobileNumber = pm.environment.get(\"mobileNumber\") || \"1989000123\";\r",
+									"var pin = pm.environment.get(\"pin\") || \"123456\";\r",
+									"\r",
+									"pm.environment.set(\"mobileNumber\", mobileNumber);\r",
+									"pm.environment.set(\"pin\", pin);\r",
+									"\r",
+									"\r",
+									"var d = new Date();\r",
+									"var moment = require('moment');\r",
+									"var current = moment().format();\r",
+									"pm.environment.set(\"currentTimeForBusiness\", current);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "version",
+								"type": "text",
+								"value": "2.0"
+							},
+							{
+								"key": "appId",
+								"type": "text",
+								"value": "{{appId}}"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestData",
+									"value": "[\n    {\n        \"_requestBody\": {\n            \"header\": {\n                \"reqMsgId\": \"{{$guid}}\",\n                \"reqTime\": \"{{currentTimeForBusiness}}\"\n            },\n            \"body\": {\n                \"mobileCountryCode\": \"60\",\n                \"mobileNumber\": \"{{mobileNumber}}\",\n                \"pin\": \"{{pin}}\",\n                \"programCode\": \"EWALLET\",\n                \"type\": \"NONE_TXN_PIN\",\n                \"scene\": \"CHECK\",\n                \"envInfo\": \"{\\terminalType\\\":\\\"APP\\\"}\"\n            }\n        }\n    }\n]",
+									"type": "text"
+								},
+								{
+									"key": "operationType",
+									"value": "com.abl.wallet.v3.customer.loginRequest",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://{{appgateway}}/mgw.htm",
+						"description": "ABL login: /t/3.0/customer/loginRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "[Positive]topup.main",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"log print\", function () {\r",
+									"    setTimeout(()=>{console.log(\"this is log info\");}, 150);\r",
+									"    console.info(pm.request.toJSON());\r",
+									"    console.info(pm.response.json());\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseBody = pm.response.json();\r",
+									"pm.test(\"Response is success\", function () {\r",
+									"    pm.expect(responseBody.resultStatus).to.eql(1000);\r",
+									"    pm.expect(responseBody.result.success).to.eql(true);\r",
+									"});\r",
+									"pm.environment.set(\"cashierOrderId\", responseBody.result.cashierOrderId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "appId",
+								"value": "{{appId}}",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "userId={{userId}}; sessionId={{sessionId}}; loginId={{loginId}}",
+								"type": "text"
+							},
+							{
+								"key": "version",
+								"value": "2.0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestData",
+									"value": "[\n    {\n        \"externalInfo\":{\n            \"bizType\":\"topup\",\n            \"productCode\":\"51053000000001\"\n        },\n        \"envInfo\":{\n            \"osType\":\"IOS\",\n            \"appVersion\":\"1.7.39\",\n            \"clientKey\":\"hK5d5LVkjFnRSgwpka\",\n            \"extendInfo\":{\n                \"Latitude\":\"30.288432\",\n                \"Longitude\":\"120.006388\",\n                \"LBS_CHECK_IN_TIME\":\"{{cashierTimestamp}}\",\n                \"LBSNullReason\":\"0\",\n                \"mobileNetwork\":\"WIFI\"\n            },\n            \"osVersion\":\"14.2\",\n            \"terminalType\":\"APP\",\n            \"cashierSdkVersion\":\"1.1.0\",\n            \"tokenId\":\"QwmNDSY8EGA==\",\n            \"clientIp\":\"fe80::37e0:2ce1:a862:a782\"\n        },\n        \"tng_rateLimitOperation\":\"2\"\n    }\n]",
+									"type": "text"
+								},
+								{
+									"key": "operationType",
+									"value": "alipayplus.mobilewallet.topup.main",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://{{appgateway}}/mgw.htm"
+					},
+					"response": []
+				},
+				{
+					"name": "[Positive]topup.pay",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"wait 1.5 seconds\", function () {\r",
+									"    setTimeout(()=>{console.log(\"just wait 1.5 seconds\");}, 1500);\r",
+									"    console.log('continue');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"log print\", function () {\r",
+									"    setTimeout(()=>{console.log(\"this is log info\");}, 150);\r",
+									"    console.info(pm.request.toJSON());\r",
+									"    console.info(pm.response.json());\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseBody = pm.response.json();\r",
+									"pm.test(\"Response is success\", function () {\r",
+									"    pm.expect(responseBody.resultStatus).to.eql(1000);\r",
+									"    pm.expect(responseBody.result.success).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "appId",
+								"type": "text",
+								"value": "{{appId}}"
+							},
+							{
+								"key": "workspaceId",
+								"type": "text",
+								"value": "{{workspaceId}}"
+							},
+							{
+								"key": "Cookie",
+								"type": "text",
+								"value": "userId={{userId}}; sessionId={{sessionId}}; loginId={{loginId}}"
+							},
+							{
+								"key": "tenantId",
+								"type": "text",
+								"value": "{{tenantId}}"
+							},
+							{
+								"key": "version",
+								"type": "text",
+								"value": "2.0"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestData",
+									"value": "[\n    {\n        \"amount\":\"1000\",\n        \"saveCard\":0,\n        \"channelIndex\":\"NET_BANKING_CIMB\",\n        \"intentCurrencyCode\":\"MYR\",\n        \"envInfo\":{\n            \"osType\":\"IOS\",\n            \"appVersion\":\"1.7.39\",\n            \"clientKey\":\"hK5d5QCE30W9O4RLVkr6YEGJFTWhMbRUG5oAgUApxxZ/PcNpnCqgwajFnRSgwpka\",\n            \"extendInfo\":{\n                \"Latitude\":\"30.288364\",\n                \"Longitude\":\"120.006370\",\n                \"LBS_CHECK_IN_TIME\":\"{{cashierTimestamp}}\",\n                \"LBSNullReason\":\"0\",\n                \"mobileNetwork\":\"WIFI\"\n            },\n            \"osVersion\":\"14.2\",\n            \"terminalType\":\"APP\",\n            \"cashierSdkVersion\":\"1.1.0\",\n            \"tokenId\":\"QwmNDSY8EGxS2MO78yX8VGD/LvkW3ST69qM9JJpdI19PdVcTdwEAAA==\",\n            \"clientIp\":\"fe80::37e0:2ce1:a862:a782\"\n        },\n        \"channelIndexes\":[\n            \"NET_BANKING_CIMB\"\n        ],\n        \"requestId\":\"{{$guid}}\",\n        \"saveTopupPayCard\":0,\n        \"cashierOrderId\":\"{{cashierOrderId}}\"\n    }\n]",
+									"type": "text"
+								},
+								{
+									"key": "operationType",
+									"value": "alipayplus.mobilewallet.topup.pay",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://mpaasgw.tngdigital.com.my/mgw.htm"
+					},
+					"response": []
+				},
+				{
+					"name": "[Positive]topup.pay.query",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"wait 1.5 seconds\", function () {\r",
+									"    setTimeout(()=>{console.log(\"just wait 1.5 seconds\");}, 3000);\r",
+									"    console.log('continue');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"log print\", function () {\r",
+									"    setTimeout(()=>{console.log(\"this is log info\");}, 150);\r",
+									"    console.info(pm.request.toJSON());\r",
+									"    console.info(pm.response.json());\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var responseBody = pm.response.json();\r",
+									"pm.test(\"Response is success\", function () {\r",
+									"    pm.expect(responseBody.resultStatus).to.eql(1000);\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "appId",
+								"type": "text",
+								"value": "{{appId}}"
+							},
+							{
+								"key": "Cookie",
+								"type": "text",
+								"value": "userId={{userId}}; sessionId={{sessionId}}; loginId={{loginId}}"
+							},
+							{
+								"key": "version",
+								"type": "text",
+								"value": "2.0"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestData",
+									"value": "[\n    {\n        \"envInfo\":{\n            \"osType\":\"IOS\",\n            \"appVersion\":\"1.7.39\",\n            \"clientKey\":\"hKNpnCqggwpka\",\n            \"extendInfo\":{\n                \"Latitude\":\"30.288364\",\n                \"Longitude\":\"120.006370\",\n                \"LBS_CHECK_IN_TIME\":\"{{cashierTimestamp}}\",\n                \"LBSNullReason\":\"0\",\n                \"mobileNetwork\":\"WIFI\"\n            },\n            \"osVersion\":\"14.2\",\n            \"terminalType\":\"APP\",\n            \"cashierSdkVersion\":\"1.1.0\",\n            \"tokenId\":\"QwmNDS==\",\n            \"clientIp\":\"fe80::37e0:2ce1:a862:a782\"\n        },\n        \"cashierOrderId\":\"{{cashierOrderId}}\"\n    }\n]",
+									"type": "text"
+								},
+								{
+									"key": "operationType",
+									"value": "alipayplus.mobilewallet.topup.pay.query",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://{{appgateway}}/mgw.htm"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
